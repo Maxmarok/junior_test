@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Musics extends Model
 {
+
     use HasFactory;
 
     protected $fillable = [
         'title',
         'author',
         'album',
-        'image',
         'url',
+        'photo',
     ];
 }
