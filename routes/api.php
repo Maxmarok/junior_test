@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/v1/add_music', [MusicController::class,'addMusic']);
+Route::post('/v1/get_music', [MusicController::class,'getMusic']);
+Route::get('/v1/music_list', [MusicController::class,'musicList']);
