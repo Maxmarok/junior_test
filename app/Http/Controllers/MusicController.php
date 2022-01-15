@@ -21,15 +21,15 @@ class MusicController extends Controller
         libxml_use_internal_errors(true);
         $image =  $xpath->query('//*[@id="app"]/div[2]/div[2]/div/div[1]/div[1]/div[1]/div', $dom)->item(0);
         preg_match_all("/\((.+?)\)/", $image->attributes->getNamedItem('style')->nodeValue, $matches);
-        $image = 'https:' . $matches[1][0];
+        $imageb = 'https:' . $matches[1][0];
         $ramdom_name = 'public/' . Str::random(40) . '.jpeg';
-        Storage::put($ramdom_name, getPage($image));
+        Storage::put($ramdom_name, getPage($imageb));
         $contents = '/public' . Storage::url($ramdom_name);
-        $music = Musics::create([
+        Musics::create([
             'title' => $request->title,
             'author' => $request->author ?? ' ',
             'album' => $request->album,
-            'image' =>  $contents,
+            'image' => $contents,
             'url' => $request->url,
         ]);
         return response()->json(null, 204);
@@ -56,7 +56,7 @@ class MusicController extends Controller
     }
     function musicList()
     {
-        $musics= Musics::get();
+        $musics = Musics::get();
         return response()->json($musics, 200);
     }
 }
