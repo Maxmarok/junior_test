@@ -22,9 +22,9 @@ class MusicController extends Controller
         $image =  $xpath->query('//*[@id="app"]/div[2]/div[2]/div/div[1]/div[1]/div[1]/div', $dom)->item(0);
         preg_match_all("/\((.+?)\)/", $image->attributes->getNamedItem('style')->nodeValue, $matches);
         $imageb = 'https:' . $matches[1][0];
-        $ramdom_name = 'public/' . Str::random(40) . '.jpeg';
+        $ramdom_name =  Str::random(40) . '.jpeg';
         Storage::put($ramdom_name, getPage($imageb));
-        $contents = '/public' . Storage::url($ramdom_name);
+        $contents =  Storage::url($ramdom_name);
         Musics::create([
             'title' => $request->title,
             'author' => $request->author ?? ' ',
