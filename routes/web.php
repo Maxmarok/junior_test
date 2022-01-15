@@ -26,5 +26,4 @@ Route::prefix('/api/v1')->as('api.')->group(function () {
     Route::post('/getMusic',[MusicController::class,('getMusic')]);
 
     Route::get('/music_list',[MusicController::class,('listMusicView')]);
-    Route::get('/get/music/{music}',[MusicController::class,('listMusicView')]);
 });

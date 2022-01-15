@@ -8,10 +8,12 @@
     <title>Document</title>
 </head>
 <body>
-<form enctype="multipart/form-data" method="post">
+<form action="getMusic" enctype="multipart/form-data" method="post">
     @csrf
-    <input name="curl" type="text" placeholder="Введите ссылку">
-    <button type="submit">Найти звук</button>
+    <input name="url" type="text" placeholder="Введите ссылку">
+{{--    <a href="{{"/music/"}}" type="submit">Найти звук</a>--}}
+    <button onclick="drawShelves(); return false;">add</button>
+    <button>Send</button>
 </form>
 </body>
 </html>
