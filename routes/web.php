@@ -18,5 +18,7 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::get('/{request}', 'HomeController@index')->where('request', 'music')->name('main');
 
 Route::prefix('/api/v1')->as('api.')->group(function () {
-
+    Route::post('get_music', [MusicsController::class, 'getMusic']);
+    Route::post('add_music', [MusicsController::class, 'addMusic']);
+    Route::get('music_list', [MusicsController::class, 'music_list']);
 });
