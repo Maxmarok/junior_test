@@ -51,11 +51,16 @@ class MusicsController extends Controller
         $album = trim($request->album);
 
         // ссылка на аватар
-        $imageUrl = $response['author']['avatarLarger'];
+        $imageUrl = $response['music']['coverLarge'];
 
         // извлекаем расширение файла по ссылке из curl и обрезаем лишнее
         $extension = new \SplFileInfo($imageUrl);
-        $extension = stristr($extension->getExtension(), '?', true);
+
+        if (stripos($extension, '?')) {
+            $extension = stristr($extension->getExtension(), '?', true);
+        } else {
+            $extension = $extension->getExtension();
+        }
 
         // генерируем уникальное имя во избежание возможного конфликта уже существующих
         // и склеиваем имя и расширение
@@ -66,7 +71,7 @@ class MusicsController extends Controller
 
         // если форма не заполнена, берем данные из тиктока
         if ($title == '') $title = $response['music']['title'];
-        if ($author == '') $author = $response['author']['nickname'];
+        if ($author == '') $author = $response['music']['authorName'];
         if ($album == '') $album = $response['music']['album'];
 
         // запись в БД
