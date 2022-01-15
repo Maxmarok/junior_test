@@ -20,6 +20,7 @@ class CreateMusicsTable extends Migration
             $table->string('album')->nullable(false);
             $table->string('image')->nullable(false);
             $table->string('url', 2048)->nullable(false);
+            $table->timestamps();
         });
     }
 
