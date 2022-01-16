@@ -14,12 +14,18 @@ class MusicController extends Controller
 {
     function add(AddMusic $request){
         $params = $request->validated();
+        if(empty(PeakParser::getMusic($params['url']))){
+            $params['image'] = "blankAvatar.png";
+        }
+        else{
+            $imageUrl = PeakParser::getMusic($params['url'])['music']['coverThumb'];
+            $image_content = file_get_contents($imageUrl);
+            $name = explode('?', substr($imageUrl, strrpos($imageUrl, '/') + 1))[0];
+            Storage::disk('covers')->put($name, $image_content);
+            $params['image'] =$name;
+        }
 
-        $imageUrl = PeakParser::getMusic($params['url'])['music']['coverThumb'];
-        $image_content = file_get_contents($imageUrl);
-        $name = explode('?', substr($imageUrl, strrpos($imageUrl, '/') + 1))[0];
-        Storage::disk('covers')->put($name, $image_content);
-        $params['image'] =$name;
+
 
         $music = new  Musics();
         $music->fill($params);
