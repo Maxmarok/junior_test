@@ -19,7 +19,7 @@ class MusicResource extends JsonResource
             'title' => $this->title,
             'author' => $this->author,
             'album' => $this->album,
-            'image' =>$request->getSchemeAndHttpHost()."/public/storage/".$this->image,
+            'image' =>$request->getSchemeAndHttpHost()."/public".$this->image,
             'url' => $this->url
         ];
     }
