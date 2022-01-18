@@ -21,6 +21,9 @@ class MusicController extends Controller
         if (!empty($musicInfo['music']['coverThumb'])) {
             $dataForStorage = file_get_contents($musicInfo['music']['coverThumb']);
             $filename = "\MusicImages\\" .time(). "_" . Str::uuid();
+            if (!file_exists(storage_path('app\\public\\MusicImages'))) {
+                mkdir(storage_path('app\\public\\MusicImages'), 0777, true);
+            }
             file_put_contents(storage_path("app\public{$filename}"), $dataForStorage);
             $filename = Str::replace('\\','/',$filename);
             $newData['image'] = "/storage{$filename}";
