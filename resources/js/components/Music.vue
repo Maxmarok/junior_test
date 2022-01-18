@@ -52,7 +52,7 @@
             </div>
         </div>
 
-        
+
         <div v-if="items && items.length>0" class="page__row page__row_border">
             <div class="page__col">
                 <div class="products__grid">
@@ -91,17 +91,17 @@
                 <div class="form-block">
                     <b-form-group label="Ссылка на звук в TikTok" label-for="song-input" invalid-feedback="Ссылка не указана" label-class="song__label">
                         <input id="song-input" type="text" class="form-control song__input" placeholder="Ссылка на звук в TikTok" v-model="val" required="" />
-                    </b-form-group>    
+                    </b-form-group>
                     <b-form-group label="Название" label-for="title-input" invalid-feedback="Название не указано" label-class="song__label">
                         <input id="title-input" type="text" class="form-control song__input" placeholder="Название" v-model="titleSong" required="" />
-                    </b-form-group>     
+                    </b-form-group>
                     <b-form-group label="Исполнитель" label-for="artist-input" invalid-feedback="Ссылка не указана" label-class="song__label">
                         <input id="artist-input" type="text" class="form-control song__input" placeholder="Исполнитель" v-model="author" required="" />
-                    </b-form-group>       
+                    </b-form-group>
                     <b-form-group label="Альбом" label-for="album-input" invalid-feedback="Ссылка не указана" label-class="song__label">
                         <input id="album-input" type="text" class="form-control song__input" placeholder="Альбом" v-model="album" required="" />
-                    </b-form-group>      
-                     <p class="form-tip text-danger" v-if="error" v-html="error" /> 
+                    </b-form-group>
+                     <p class="form-tip text-danger" v-if="error" v-html="error" />
                     <button class="btn btn-lg btn-primary btn-block my-4" @click="addSong()" :disabled="!val" v-if="!waiting" v-html="'Добавить'" />
                     <div class="loading" :class="{active: waiting}" />
                     <p class="form-tip" v-if="waiting" v-html="'Добавляем трек, это займет от 5 до 10 секунд'" />
@@ -137,7 +137,7 @@
                 titleSong: "",
                 author: "",
                 album: "",
-                cover: "/img/blankAvatar.png"             
+                cover: "/img/blankAvatar.png"
             }
         },
         mounted() {
@@ -163,7 +163,8 @@
                     url : this.val,
                     title : this.titleSong,
                     author : this.author,
-                    album : this.album
+                    album : this.album,
+                    image: this.cover
                 }).then(response => {
                     this.waiting = false;
                     this.$bvModal.hide('song-modal');
@@ -174,7 +175,7 @@
                     if(error !== undefined) {
                         this.error = 'Не удалось добавить трек, попробуйте позже';
                     }
-                });            
+                });
             },
             setSongParams(data) {
                 const music = data.music;
@@ -186,10 +187,10 @@
                     this.author = (music.authorName) ? music.authorName : "Исполнитель неизвестен" ;
                 } else {
                    this.titleSong = "";
-                   this.album = ""; 
+                   this.album = "";
                     this.authorName = "";
-                    this.cover = "/img/blankAvatar.png";    
-                };    
+                    this.cover = "/img/blankAvatar.png";
+                };
             },
             getMusic(url) {
                 this.waiting = true;
@@ -223,7 +224,7 @@
     .song__label {
          font-size: 13px;
         color: #B2B3BD;
-        font-weight: 500;       
+        font-weight: 500;
     }
 
     .title {
