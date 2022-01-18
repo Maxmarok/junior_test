@@ -24,10 +24,10 @@ class AddMusic extends FormRequest
     public function rules()
     {
         return [
-            'title'=> 'required',
-            'author'=> 'required',
-            'album'=> 'required',
-            'url'=> 'required'
+            'title'=> 'string|nullable',
+            'author'=> 'string|nullable',
+            'album'=> 'string|nullable',
+            'url'=> 'string|required',
         ];
     }
 }
