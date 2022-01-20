@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Controllers\Api\MusicController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,4 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/{request}', 'HomeController@index')->where('request', 'music')->name('main');
 
-Route::prefix('/api/v1')->as('api.')->group(function () {
 
-});
