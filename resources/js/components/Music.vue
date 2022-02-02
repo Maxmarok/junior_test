@@ -34,7 +34,7 @@
         </div>
 
         <div class="page__row" v-if="mobile && items">
-             <div class="page__panel">
+            <div class="page__panel">
                 <p>
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <circle class="color" cx="6" cy="6" r="5.5" fill="#7FBA7A"/>
@@ -52,7 +52,7 @@
             </div>
         </div>
 
-        
+
         <div v-if="items && items.length>0" class="page__row page__row_border">
             <div class="page__col">
                 <div class="products__grid">
@@ -86,22 +86,22 @@
         <b-modal id="song-modal" centered hide-footer>
             <div class="modal-center d-flex flex-column mx-auto">
                 <div class="text-center">
-                     <b-img :src="cover" rounded="circle" alt="Обложка альбома" width="132" height="132"></b-img>
+                    <b-img :src="cover" rounded="circle" alt="Обложка альбома" width="132" height="132"></b-img>
                 </div>
                 <div class="form-block">
                     <b-form-group label="Ссылка на звук в TikTok" label-for="song-input" invalid-feedback="Ссылка не указана" label-class="song__label">
                         <input id="song-input" type="text" class="form-control song__input" placeholder="Ссылка на звук в TikTok" v-model="val" required="" />
-                    </b-form-group>    
+                    </b-form-group>
                     <b-form-group label="Название" label-for="title-input" invalid-feedback="Название не указано" label-class="song__label">
                         <input id="title-input" type="text" class="form-control song__input" placeholder="Название" v-model="titleSong" required="" />
-                    </b-form-group>     
+                    </b-form-group>
                     <b-form-group label="Исполнитель" label-for="artist-input" invalid-feedback="Ссылка не указана" label-class="song__label">
                         <input id="artist-input" type="text" class="form-control song__input" placeholder="Исполнитель" v-model="author" required="" />
-                    </b-form-group>       
+                    </b-form-group>
                     <b-form-group label="Альбом" label-for="album-input" invalid-feedback="Ссылка не указана" label-class="song__label">
                         <input id="album-input" type="text" class="form-control song__input" placeholder="Альбом" v-model="album" required="" />
-                    </b-form-group>      
-                     <p class="form-tip text-danger" v-if="error" v-html="error" /> 
+                    </b-form-group>
+                    <p class="form-tip text-danger" v-if="error" v-html="error" />
                     <button class="btn btn-lg btn-primary btn-block my-4" @click="addSong()" :disabled="!val" v-if="!waiting" v-html="'Добавить'" />
                     <div class="loading" :class="{active: waiting}" />
                     <p class="form-tip" v-if="waiting" v-html="'Добавляем трек, это займет от 5 до 10 секунд'" />
@@ -113,131 +113,132 @@
 </template>
 
 <script>
-    import axios from "axios";
-    import {mapGetters} from "vuex";
-    import { GET_MUSIC_LIST, GET_MUSIC, ADD_MUSIC } from '../api-routes';
-    import bannerFirstTrack from "./bannerFirstTrack";
-    import songCard from "./songCard";
+import axios from "axios";
+import {mapGetters} from "vuex";
+import { GET_MUSIC_LIST, GET_MUSIC, ADD_MUSIC } from '../api-routes';
+import bannerFirstTrack from "./bannerFirstTrack";
+import songCard from "./songCard";
 
-    export default {
-        components: {
-            bannerFirstTrack,
-            songCard
-        },
-        name: "Music",
+export default {
+    components: {
+        bannerFirstTrack,
+        songCard
+    },
+    name: "Music",
 
-        data() {
-            return {
-                editing: false,
-                val: this.value,
-                music: null,
-                error: null,
-                waiting: false,
-                items: null,
-                titleSong: "",
-                author: "",
-                album: "",
-                cover: "/img/blankAvatar.png"             
-            }
+    data() {
+        return {
+            editing: false,
+            val: this.value,
+            music: null,
+            error: null,
+            waiting: false,
+            items: null,
+            titleSong: "",
+            author: "",
+            album: "",
+            cover: "/img/blankAvatar.png"
+        }
+    },
+    mounted() {
+        this.getMusicList();
+    },
+    computed: {
+        ...mapGetters(['user', 'userAuthorized', 'url', 'tablet', 'mobile']),
+    },
+    methods: {
+        openMusicModal() {
+            this.waiting = this.error = false;
+            this.$bvModal.show('music-modal');
         },
-        mounted() {
-            this.getMusicList();
+        getMusicList() {
+            axios.get(GET_MUSIC_LIST).then(response => {
+                this.items = response.data;
+            });
         },
-        computed: {
-            ...mapGetters(['user', 'userAuthorized', 'url', 'tablet', 'mobile']),
+        addSong() {
+            this.waiting = true;
+            this.error = null;
+            axios.post(ADD_MUSIC, {
+                url : this.val,
+                title : this.titleSong,
+                author : this.author,
+                album : this.album !== "" ? this.album : 'noName',
+                image: this.cover,
+            }).then(response => {
+                this.waiting = false;
+                this.$bvModal.hide('song-modal');
+                this.getMusicList();
+            }).catch(error => {
+                console.log(error);
+                this.waiting = false;
+                if(error !== undefined) {
+                    this.error = 'Не удалось добавить трек, попробуйте позже';
+                }
+            });
         },
-        methods: {
-            openMusicModal() {
-                this.waiting = this.error = false;
-                this.$bvModal.show('music-modal');
-            },
-            getMusicList() {
-                axios.get(GET_MUSIC_LIST).then(response => {
-                    this.items = response.data;
-                });
-            },
-            addSong() {
-                this.waiting = true;
+        setSongParams(data) {
+            const music = data.music;
+            const artist = data.artist;
+            if (music) {
+                this.titleSong = (music.title) ? music.title : "";
+                this.album = (music.album) ? music.album : "";
+                this.cover = (music.coverThumb) ? music.coverThumb : "/img/blankAvatar.png" ;
+                this.author = (music.authorName) ? music.authorName : "Исполнитель неизвестен" ;
+            } else {
+                this.titleSong = "";
+                this.album = "";
+                this.authorName = "";
+                this.cover = "/img/blankAvatar.png";
+            };
+        },
+        getMusic(url) {
+            this.waiting = true;
+            this.error = null;
+            axios.post(GET_MUSIC, {url: url,action:'getMusic'}).then(response => {
+                this.waiting = false;
+                this.song = response.data;
+                this.setSongParams(response.data);
+                this.$bvModal.hide('music-modal');
+                this.$bvModal.show('song-modal');
                 this.error = null;
-                axios.post(ADD_MUSIC, {
-                    url : this.val,
-                    title : this.titleSong,
-                    author : this.author,
-                    album : this.album
-                }).then(response => {
-                    this.waiting = false;
-                    this.$bvModal.hide('song-modal');
-                    this.getMusicList();
-                }).catch(error => {
-                    console.log(error);
-                    this.waiting = false;
-                    if(error !== undefined) {
-                        this.error = 'Не удалось добавить трек, попробуйте позже';
-                    }
-                });            
-            },
-            setSongParams(data) {
-                const music = data.music;
-                const artist = data.artist;
-                if (music) {
-                    this.titleSong = (music.title) ? music.title : "";
-                    this.album = (music.album) ? music.album : "";
-                    this.cover = (music.coverThumb) ? music.coverThumb : "/img/blankAvatar.png" ;
-                    this.author = (music.authorName) ? music.authorName : "Исполнитель неизвестен" ;
-                } else {
-                   this.titleSong = "";
-                   this.album = ""; 
-                    this.authorName = "";
-                    this.cover = "/img/blankAvatar.png";    
-                };    
-            },
-            getMusic(url) {
-                this.waiting = true;
-                this.error = null;
-                axios.post(GET_MUSIC, {url: url}).then(response => {
-                    this.waiting = false;
-                    this.song = response.data;
-                    this.setSongParams(response.data);
-                    this.$bvModal.hide('music-modal');
-                    this.$bvModal.show('song-modal');
-                    this.error = null;
-                }).catch(error => {
-                    console.log(error);
-                    this.waiting = false;
-                    if(error !== undefined) {
-                        this.error = 'Не удалось найти трек, попробуйте еще раз';
-                    }
-                });
-            }
+            }).catch(error => {
+                console.log(error);
+                this.waiting = false;
+                if(error !== undefined) {
+                    this.error = 'Не удалось найти трек, попробуйте еще раз';
+                }
+            });
         }
     }
+}
 </script>
 
 <style scoped>
-    .song__input {
-        font-size: 16px;
-        color: #808191;
-        font-weight: 600;
-    }
+.song__input {
+    font-size: 16px;
+    color: #808191;
+    font-weight: 600;
+}
 
-    .song__label {
-         font-size: 13px;
-        color: #B2B3BD;
-        font-weight: 500;       
-    }
+.song__label {
+    font-size: 13px;
+    color: #B2B3BD;
+    font-weight: 500;
+}
 
-    .title {
-        font-weight: 600;
-        font-size: 19px;
-        line-height: 23px;
-        color: #808191;
-    }
+.title {
+    font-weight: 600;
+    font-size: 19px;
+    line-height: 23px;
+    color: #808191;
+}
 
 
-    @media only screen and (min-width: 980px)  {
-        .products__item {
-            margin: 0 55px 20px 0;
-            width: calc(50% - 80px);
-        }
+@media only screen and (min-width: 980px)  {
+    .products__item {
+        margin: 0 55px 20px 0;
+        width: calc(50% - 80px);
     }
+}
 </style>
